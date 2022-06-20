@@ -1,7 +1,7 @@
 import './App.css';
-import { Box, List, ThemeIcon } from '@mantine/core';
+import { Box, Button, List, ListItem, ThemeIcon } from '@mantine/core';
 import { AddTodo } from './components/AddTodo';
-import { CheckCircleFillIcon } from '@primer/octicons-react';
+import { CheckCircleFillIcon, CircleSlashIcon } from '@primer/octicons-react';
 import useSWR from 'swr';
 
 export interface Todo {
@@ -29,6 +29,13 @@ const App = () => {
     mutate(updated);
   };
 
+  const removeTodo = async (id: number) => {
+    const updated = await fetch(`${ENDPOINT}/api/todos/${id}`, {
+      method: 'DELETE',
+    }).then((response) => response.json());
+    mutate(updated);
+  };
+
   return (
     <div className='App'>
       <Box
@@ -42,7 +49,7 @@ const App = () => {
         <List spacing='xs' size='sm' mb={12} center>
           {data?.map((todo) => {
             return (
-              <List.Item
+              <ListItem
                 onClick={() => markTodoAsDone(todo.id)}
                 key={`todo__${todo.id}`}
                 icon={
@@ -57,8 +64,11 @@ const App = () => {
                   )
                 }
               >
-                {todo.title}
-              </List.Item>
+                <span>{todo.title}</span>
+                <Button onClick={() => removeTodo(todo.id)} color={'red'}>
+                  Remove Todo
+                </Button>
+              </ListItem>
             );
           })}
         </List>
