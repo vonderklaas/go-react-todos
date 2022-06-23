@@ -30,6 +30,11 @@ export const AddTodo = ({ mutate }: { mutate: KeyedMutator<Todo[]> }) => {
 
   return (
     <>
+      <Group position='center'>
+        <Button size='xs' onClick={() => setOpen(true)}>
+          Add todo
+        </Button>
+      </Group>
       <Modal opened={open} onClose={() => setOpen(false)} title='Create todo'>
         <form onSubmit={form.onSubmit(createTodo)}>
           <TextInput
@@ -46,15 +51,11 @@ export const AddTodo = ({ mutate }: { mutate: KeyedMutator<Todo[]> }) => {
             placeholder='Tell me more'
             {...form.getInputProps('body')}
           />
-          <Button type='submit'>Create todo</Button>
+          <Button size='xs' type='submit'>
+            Create todo
+          </Button>
         </form>
       </Modal>
-
-      <Group position='center'>
-        <Button fullWidth mb={12} onClick={() => setOpen(true)}>
-          Add todo
-        </Button>
-      </Group>
     </>
   );
 };

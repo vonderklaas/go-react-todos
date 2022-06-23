@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -18,6 +17,7 @@ func main() {
 
 	app := fiber.New()
 
+	// Cors for React Application
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "http://localhost:3000",
 		AllowHeaders: "Origin, Content-Type, Accept",
@@ -33,6 +33,10 @@ func main() {
 		return context.JSON(todos)
 	})
 
+	app.Get("/api/todos/length", func(context *fiber.Ctx) error {
+		return context.JSON(len(todos))
+	})
+
 	app.Post("/api/todos", func(context *fiber.Ctx) error {
 		todo := &Todo{}
 		if err := context.BodyParser(todo); err != nil {
@@ -46,11 +50,11 @@ func main() {
 	app.Patch("/api/todos/:id/done", func(context *fiber.Ctx) error {
 		id, err := context.ParamsInt("id")
 		if err != nil {
-			return context.Status(401).SendString("Invalid ID")
+			return context.Status(401).SendString("Invalid ID, try again!")
 		}
 		for i, todo := range todos {
 			if todo.ID == id {
-				todos[i].Done = true
+				todos[i].Done = !todos[i].Done
 				break
 			}
 		}
@@ -60,7 +64,7 @@ func main() {
 	app.Delete("/api/todos/:id", func(context *fiber.Ctx) error {
 		id, err := context.ParamsInt("id")
 		if err != nil {
-			return context.Status(401).SendString("Invalid ID")
+			return context.Status(401).SendString("Invalid ID, try again!")
 		}
 		for i, todo := range todos {
 			if todo.ID == id {
